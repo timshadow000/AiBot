@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIBOT — Daily Key</title>
+<style>
+:root{--bg0:#0a0b10;--bg1:#10121a;--card:#181b26;--cardHover:#202434;--stroke:#2e344c;--accent:#825fff;--accent2:#50beff;--ok:#5adc8c;--err:#ff646e;--warn:#ffbe5a;--text:#f0f2fa;--textDim:#8c94ac}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg0);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 30%,rgba(130,95,255,.18),transparent 40%),radial-gradient(circle at 80% 70%,rgba(80,190,255,.12),transparent 45%);z-index:-1}
+.container{max-width:900px;margin:0 auto;padding:40px 24px 80px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:50px}
+.logo{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:22px;box-shadow:0 0 30px rgba(130,95,255,.4)}
+h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{font-size:13px;color:var(--textDim);font-family:ui-monospace,monospace}
+.hero{text-align:center;margin-bottom:40px}
+.badge{display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(130,95,255,.15);border:1px solid rgba(130,95,255,.3);color:var(--accent);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+h2{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1.1;margin-bottom:12px;background:linear-gradient(135deg,#fff,#b8bcd0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:15px;color:var(--textDim);max-width:540px;margin:0 auto 24px}
+.panel{padding:24px;border-radius:16px;background:rgba(24,27,38,.8);border:1.5px solid var(--stroke);backdrop-filter:blur(10px);margin-bottom:20px}
+.panel label{font-size:11px;color:var(--textDim);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:10px;display:block}
+.hwid-row,.key-row{display:flex;gap:10px;align-items:stretch}
+.hwid-input,.key-value{flex:1;font-family:ui-monospace,monospace;font-size:14px;padding:14px 18px;border-radius:10px;background:var(--bg0);border:1px solid var(--stroke);color:var(--text);outline:none;transition:border-color .15s}
+.hwid-input:focus{border-color:var(--accent)}
+.key-value{color:var(--accent2);font-weight:700;letter-spacing:2px;text-align:center;font-size:17px;user-select:all}
+.btn{padding:14px 20px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--accent),#6b48e6);color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(130,95,255,.35)}
+.btn.ok{background:linear-gradient(135deg,var(--ok),#3ab06c);color:#0a0b10}
+.btn-mini{padding:10px 16px;border-radius:8px;border:1px solid var(--stroke);background:var(--card);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+.btn-mini:hover{background:var(--cardHover);border-color:var(--accent)}
+.btn-mini.success{color:var(--ok);border-color:var(--ok)}
+.timer{display:flex;align-items:center;gap:10px;justify-content:center;padding:12px;border-radius:10px;background:var(--card);border:1px solid var(--stroke);margin-top:14px;font-size:13px;color:var(--textDim);font-family:ui-monospace,monospace}
+.timer strong{color:var(--warn);font-size:15px}
+.steps{margin-top:40px}
+.step{display:flex;gap:16px;padding:16px;border-radius:12px;background:var(--card);border:1px solid var(--stroke);margin-bottom:10px}
+.step-num{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;font-size:14px}
+.step h4{font-size:14px;font-weight:700;margin-bottom:3px}
+.step p{font-size:13px;color:var(--textDim)}
+.step a{color:var(--accent2);text-decoration:none;font-weight:600}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);padding:14px 24px;border-radius:12px;background:var(--card);border:1px solid var(--ok);color:var(--ok);font-weight:600;font-size:14px;transition:transform .3s ease;z-index:100}
+.toast.show{transform:translateX(-50%) translateY(0)}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--stroke);text-align:center;color:var(--textDim);font-size:12px}
+footer a{color:var(--accent2);text-decoration:none}
+.status{padding:10px 14px;border-radius:8px;background:rgba(90,220,140,.1);border:1px solid rgba(90,220,140,.3);color:var(--ok);font-size:13px;text-align:center;margin-top:12px}
+.status.err{background:rgba(255,100,110,.1);border-color:rgba(255,100,110,.3);color:var(--err)}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo">🔑</div>
+    <div>
+      <h1>AIBOT — Daily Key</h1>
+      <div class="subtitle">timshadow000.github.io/AiBot/hello</div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="badge">HWID · 24h Reset</div>
+    <h2>Генератор ключа</h2>
+    <p>Ключ привязан к HWID и меняется раз в 24 часа (UTC). Введи HWID — получишь ключ для текущих суток.</p>
+  </div>
+
+  <div class="panel">
+    <label>Твой HWID</label>
+    <div class="hwid-row">
+      <input class="hwid-input" id="hwidInput" placeholder="Вставь HWID из скрипта">
+      <button class="btn-mini" id="hwidPaste">📋 Вставить</button>
+    </div>
+    <div class="status" id="hwidStatus" style="display:none"></div>
+  </div>
+
+  <div class="panel" id="keyPanel" style="display:none">
+    <label>Ключ на сегодня</label>
+    <div class="key-row">
+      <div class="key-value" id="keyValue">—</div>
+      <button class="btn ok" id="copyBtn">📋 Копировать</button>
+    </div>
+    <div class="timer">
+      ⏱ Обновится через <strong id="timer">--:--:--</strong>
+    </div>
+  </div>
+
+  <div class="panel" id="actionsPanel" style="display:none">
+    <div class="key-row">
+      <button class="btn" id="regenerateBtn">🔄 Обновить ключ</button>
+      <button class="btn-mini" id="clearBtn">Очистить</button>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div><h4>Скопируй HWID из скрипта</h4><p>При первом запуске скрипт покажет твой HWID. Нажми "📋" чтобы скопировать.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div><h4>Вставь сюда</h4><p>Введи HWID в поле выше — ключ появится автоматически.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div><h4>Скопируй ключ</h4><p>Формат: <code>AIBOT-XXXX-XXXX-XXXX</code></p></div></div>
+    <div class="step"><div class="step-num">4</div><div><h4>Вставь обратно в скрипт</h4><p>Ключ сохранится на 24 часа, потом обнови.</p></div></div>
+    <div class="step"><div class="step-num">5</div><div><h4>Получи Groq API</h4><p><a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> — бесплатно.</p></div></div>
+  </div>
+
+  <footer>
+    <p>AIBOT © 2025 · <a href="https://github.com/timshadow000">timshadow000</a></p>
+  </footer>
+</div>
+<div class="toast" id="toast">Скопировано</div>
+
+<script>
+// ==================== SECRET (должен совпадать со скриптом) ====================
+const SECRET = "AIBOT_KS_V15_SECRET_X9K7P3M2V8Q5W1N4R6T0";
+
+// ==================== HASH (совпадает с Lua-версией) ====================
+function hash32(str){
+    // Возвращает 8 hex-символов (32-bit unsigned)
+    let hash = 5381;
+    for (let i = 0; i < str.length; i++){
+        hash = ((hash * 33) + str.charCodeAt(i)) >>> 0;
+    }
+    return hash.toString(16).toUpperCase().padStart(8, '0');
+}
+
+function dailyKey(hwid, dateOverride){
+    // UTC date YYYY-MM-DD
+    let date;
+    if (dateOverride) date = dateOverride;
+    else {
+        const d = new Date();
+        date = d.getUTCFullYear() + '-' +
+               String(d.getUTCMonth()+1).padStart(2,'0') + '-' +
+               String(d.getUTCDate()).padStart(2,'0');
+    }
+    const base = SECRET + '|' + hwid + '|' + date;
+    const h1 = hash32(base);
+    const h2 = hash32(h1 + base);
+    const h3 = hash32(h2 + base);
+    return 'AIBOT-' + h1.substring(0,4) + '-' + h2.substring(0,4) + '-' + h3.substring(0,4);
+}
+
+// ==================== UI ====================
+const hwidInput = document.getElementById('hwidInput');
+const hwidPaste = document.getElementById('hwidPaste');
+const hwidStatus = document.getElementById('hwidStatus');
+const keyPanel = document.getElementById('keyPanel');
+const keyValue = document.getElementById('keyValue');
+const copyBtn = document.getElementById('copyBtn');
+const actionsPanel = document.getElementById('actionsPanel');
+const regenerateBtn = document.getElementById('regenerateBtn');
+const clearBtn = document.getElementById('clearBtn');
+const timerEl = document.getElementById('timer');
+const toast = document.getElementById('toast');
+
+let currentKey = '';
+
+function showToast(t){
+    toast.textContent = t;
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+function updateKey(){
+    const hwid = hwidInput.value.trim();
+    if (!hwid) {
+        hwidStatus.style.display = 'none';
+        keyPanel.style.display = 'none';
+        actionsPanel.style.display = 'none';
+        return;
+    }
+    currentKey = dailyKey(hwid);
+    keyValue.textContent = currentKey;
+    keyPanel.style.display = 'block';
+    actionsPanel.style.display = 'block';
+    hwidStatus.textContent = '✓ HWID принят · ' + hwid.length + ' символов';
+    hwidStatus.style.display = 'block';
+    hwidStatus.classList.remove('err');
+    localStorage.setItem('aibot_hwid', hwid);
+}
+
+hwidInput.addEventListener('input', updateKey);
+
+hwidPaste.addEventListener('click', async () => {
+    try {
+        const txt = await navigator.clipboard.readText();
+        hwidInput.value = txt.trim();
+        updateKey();
+        showToast('HWID вставлен');
+    } catch(e){
+        showToast('Разреши доступ к буферу');
+    }
+});
+
+copyBtn.addEventListener('click', async () => {
+    if (!currentKey) return;
+    try {
+        await navigator.clipboard.writeText(currentKey);
+        copyBtn.textContent = '✓ Скопировано';
+        showToast('Ключ скопирован');
+        setTimeout(() => copyBtn.textContent = '📋 Копировать', 2000);
+    } catch(e){
+        const ta = document.createElement('textarea');
+        ta.value = currentKey; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('Ключ скопирован');
+    }
+});
+
+regenerateBtn.addEventListener('click', () => {
+    updateKey();
+    showToast('Ключ обновлён');
+});
+
+clearBtn.addEventListener('click', () => {
+    hwidInput.value = '';
+    localStorage.removeItem('aibot_hwid');
+    updateKey();
+});
+
+// ==================== URL PARAM AUTO-FILL ====================
+(function(){
+    const p = new URLSearchParams(window.location.search);
+    const h = p.get('hwid') || p.get('id') || p.get('h');
+    if (h) {
+        hwidInput.value = h;
+        updateKey();
+    } else {
+        const saved = localStorage.getItem('aibot_hwid');
+        if (saved) {
+            hwidInput.value = saved;
+            updateKey();
+        }
+    }
+})();
+
+// ==================== COUNTDOWN ====================
+function tick(){
+    const now = new Date();
+    const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()+1, 0, 0, 0));
+    const diff = Math.max(0, tomorrow.getTime() - now.getTime());
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    timerEl.textContent = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    if (diff < 1000 && currentKey) {
+        updateKey();
+    }
+}
+setInterval(tick, 1000);
+tick();
+</script>
+</body>
+</html>
